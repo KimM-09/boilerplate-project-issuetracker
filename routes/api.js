@@ -71,17 +71,17 @@ module.exports = function (app) {
       let project = req.params.project;
       const { _id, issue_title, issue_text, created_by, assigned_to, status_text, open } = req.body;
       if(!_id) {
-       return res.json('Missing ID')
+       return res.json({ error: 'missing _id'})
         
       }
       if(!issue_title && !issue_text && !created_by && ! assigned_to && !status_text && open === undefined) {
-       return res.json('No update field(s) sent')
+       return res.json({error: 'no update field(s) sent', '_id': _id })
         
       }
       try {
         const issue = await Issue.findById(_id);
         if(!issue) {
-         return res.json('Could not update')
+         return res.json({error: 'could not update', '_id': _id })
           
         }
         if(issue_title) issue.issue_title = issue_title;
@@ -90,11 +90,11 @@ module.exports = function (app) {
         if(assigned_to) issue.assigned_to = assigned_to;
         if(status_text) issue.status_text = status_text;
         if(open !== undefined) issue.open = open;
-        issue.updated_on = new Date().toUTCString();
+        issue.updated_on = new Date()
         const updatedIssue = await issue.save();
-        res.json({ result: 'successfully updated', _id: updatedIssue._id })
+        res.json({ result: 'successfully updated', '_id': _id  })
       } catch(err) {
-        res.json('Could not update')
+        res.json({error: 'could not update', '_id': _id })
       }
       
     })
@@ -103,18 +103,18 @@ module.exports = function (app) {
       let project = req.params.project;
       const { _id} = req.body;
       if(!_id){
-        res.json("Missing ID")
+        res.json({error: "missing _id"})
         return
       }
       try {
         const deleted = await Issue.findByIdAndDelete(_id);
         if(!deleted){
-          res.json('Invalid ID')
+          res.json({error: 'could not delete', '_id': _id })
           return
         }
-        res.json(`deleted ${_id}`)
+        res.json({ result: 'successfully deleted', '_id': _id })
       } catch (err) {
-        res.json('Could Not Delete')
+        res.json({error: 'could not delete', '_id': _id })
       }
     });
     

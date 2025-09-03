@@ -160,7 +160,7 @@ suite('Functional Tests', function() {
         })
         .end(function(err, res) {
             assert.equal(res.status, 200);
-            assert.equal(res.body, 'Missing ID');
+            assert.equal(res.body.error, 'missing _id');
             done();
         })
     })
@@ -173,7 +173,7 @@ suite('Functional Tests', function() {
         })
         .end(function(err, res) {
             assert.equal(res.status, 200);
-            assert.equal(res.body, 'No update field(s) sent');
+            assert.equal(res.body.error, 'no update field(s) sent');
             done();
         })
     })
@@ -187,7 +187,7 @@ suite('Functional Tests', function() {
         })
         .end(function(err, res) {
             assert.equal(res.status, 200);
-            assert.equal(res.body, 'Could not update');
+            assert.equal(res.body.error, 'could not update');
 
             done();
         })
@@ -202,7 +202,8 @@ suite('Functional Tests', function() {
         .send({ _id: id1 })
         .end(function(err, res) {
             assert.equal(res.status, 200);
-            assert.equal(res.body, `deleted ${id1}`);
+            assert.equal(res.body.result, 'successfully deleted');
+            assert.equal(res.body._id, id1);
             deletedID = id1;
             done();
         })
@@ -214,7 +215,7 @@ suite('Functional Tests', function() {
         .send({ _id: invalidID })
         .end(function(err, res) {
             assert.equal(res.status, 200);
-            assert.equal(res.body, 'Invalid ID');
+            assert.equal(res.body.error, 'could not delete');
             done();
         })
     })
@@ -225,7 +226,7 @@ suite('Functional Tests', function() {
         .send({ })
         .end(function(err, res) {
             assert.equal(res.status, 200);
-            assert.equal(res.body, 'Missing ID');
+            assert.equal(res.body.error, 'missing _id');
             done();
         })
     })
